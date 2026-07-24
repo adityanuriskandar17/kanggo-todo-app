@@ -81,9 +81,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Tugas Saya</h1>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Tugas Saya</h1>
         <button
           onClick={() => navigate('/tugas-baru')}
           className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
@@ -184,10 +184,10 @@ export default function Dashboard() {
               <button
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50 transition"
+                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50 transition"
               >
                 <ChevronLeft className="w-4 h-4" />
-                Sebelumnya
+                <span className="hidden sm:inline">Sebelumnya</span>
               </button>
               <span className="text-sm text-gray-500">
                 {page} / {totalPages}
@@ -195,9 +195,9 @@ export default function Dashboard() {
               <button
                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 disabled={page === totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50 transition"
+                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-sm border border-gray-300 rounded-lg disabled:opacity-40 hover:bg-gray-50 transition"
               >
-                Selanjutnya
+                <span className="hidden sm:inline">Selanjutnya</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
