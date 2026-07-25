@@ -1,5 +1,58 @@
 # Skrip Demo Aplikasi Kanggo Todo App
 
+Demo aplikasi manajemen tugas berbasis web yang memungkinkan pengguna untuk mengelola tugas sehari-hari dengan mudah. Aplikasi ini dilengkapi dengan sistem autentikasi JWT, CRUD tugas, fitur pencarian, filter status, serta pagination — semua dibangun dengan arsitektur full-stack modern menggunakan React di frontend dan Express.js di backend dengan database MySQL.
+
+**Link Demo:** [https://todo.adityanuriskandar.com](https://todo.adityanuriskandar.com)
+
+---
+
+## Deskripsi YouTube
+
+**Judul Video:**  
+Fullstack Todo App dengan React + Express.js + MySQL | Demo & Tutorial
+
+**Deskripsi:**
+
+```
+Di video ini saya mendemonstrasikan aplikasi Kanggo Todo App — sebuah aplikasi 
+manajemen tugas full-stack yang dibangun dari nol.
+
+Aplikasi ini mencakup:
+✅ Autentikasi JWT (Register, Login, Logout)
+✅ CRUD Tugas (Create, Read, Update, Delete)
+✅ Filter tugas berdasarkan status (Pending, In Progress, Done)
+✅ Live search berdasarkan judul tugas
+✅ Pagination
+✅ Validasi input real-time (client + server)
+✅ Deadline anti backdate
+✅ Modal konfirmasi hapus
+✅ Proteksi route (redirect jika belum login)
+✅ Responsive design (mobile, tablet, laptop)
+✅ Deployment ke GCP dengan Nginx + SSL
+
+🛠️ Teknologi:
+- Frontend: React 19, Vite, Tailwind CSS v4, React Router v7
+- Backend: Node.js, Express.js
+- Database: MySQL 8.0
+- Autentikasi: JWT + bcryptjs
+- Deployment: Google Cloud Platform (e2-small, Ubuntu 24.04)
+- Reverse Proxy: Nginx + SSL Let's Encrypt
+- Process Manager: PM2
+
+🔗 Link Aplikasi: https://todo.adityanuriskandar.com
+📂 Source Code: https://github.com/adityanuriskandar17/kanggo-todo-app
+
+Jangan lupa like, comment, dan subscribe untuk video selanjutnya! 🚀
+```
+
+### Tags (copy paste)
+
+```
+fullstack, todo app, react, express, mysql, jwt, tailwind css, node js, crud, 
+autentikasi, web development, programming, javascript, gcp, deployment, 
+nginx, letsencrypt, pm2
+```
+
 ---
 
 ## Teknologi yang Digunakan
