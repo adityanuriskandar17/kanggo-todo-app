@@ -17,7 +17,7 @@ describe('Navbar', () => {
 
   it('should render app name', () => {
     renderNavbar(null);
-    expect(screen.getByText('Kanggo')).toBeInTheDocument();
+    expect(screen.getByText('Kanggo Todo App')).toBeInTheDocument();
   });
 
   it('should show user name when logged in', () => {
