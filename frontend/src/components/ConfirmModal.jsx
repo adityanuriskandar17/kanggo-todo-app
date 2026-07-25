@@ -9,7 +9,7 @@ export default function ConfirmModal({ open, title, message, onConfirm, onCancel
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
         <button
           onClick={onCancel}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
         >
           <X className="w-5 h-5" />
         </button>

@@ -9,7 +9,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const TaskForm = lazy(() => import('./pages/TaskForm'));
 
 function PageLoader() {
-  return <div className="flex items-center justify-center min-h-[60vh] text-gray-400 text-sm">Memuat...</div>;
+  return <div role="status" aria-label="Memuat" className="flex items-center justify-center min-h-[60vh] text-gray-600 text-sm">Memuat...</div>;
 }
 
 export default function App() {

@@ -95,7 +95,7 @@ export default function Dashboard() {
 
       <div className="flex items-center gap-3 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
             type="text"
             placeholder="Cari tugas..."
@@ -151,7 +151,7 @@ export default function Dashboard() {
                           {st.label}
                         </span>
                         {task.deadline && (
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-gray-500">
                             Deadline: {formatDate(task.deadline)}
                           </span>
                         )}
@@ -160,14 +160,14 @@ export default function Dashboard() {
                     <div className="flex items-center gap-1 ml-4">
                       <button
                         onClick={() => navigate(`/edit-tugas/${task.id}`)}
-                        className="p-2 text-gray-400 hover:text-blue-600 transition"
+                        className="p-2 text-gray-500 hover:text-blue-600 transition"
                         title="Edit"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                     <button
                       onClick={() => setDeleteTarget(task)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition"
+                      className="p-2 text-gray-500 hover:text-red-600 transition"
                       title="Hapus"
                     >
                       <Trash2 className="w-4 h-4" />
