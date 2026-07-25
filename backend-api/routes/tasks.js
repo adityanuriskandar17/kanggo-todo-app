@@ -57,7 +57,8 @@ router.get('/', async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ message: 'Gagal mengambil daftar tugas.', error: err.message });
+    console.error('Get tasks error:', err.message);
+    res.status(500).json({ message: 'Gagal mengambil daftar tugas.' });
   }
 });
 
@@ -72,7 +73,8 @@ router.get('/:id', async (req, res) => {
     }
     res.json({ task: rows[0] });
   } catch (err) {
-    res.status(500).json({ message: 'Gagal mengambil tugas.', error: err.message });
+    console.error('Get task detail error:', err.message);
+    res.status(500).json({ message: 'Gagal mengambil tugas.' });
   }
 });
 
@@ -104,7 +106,8 @@ router.post('/', async (req, res) => {
     const [task] = await pool.query('SELECT * FROM tasks WHERE id = ?', [result.insertId]);
     res.status(201).json({ message: 'Tugas berhasil dibuat.', task: task[0] });
   } catch (err) {
-    res.status(500).json({ message: 'Gagal membuat tugas.', error: err.message });
+    console.error('Create task error:', err.message);
+    res.status(500).json({ message: 'Gagal membuat tugas.' });
   }
 });
 
@@ -149,7 +152,8 @@ router.put('/:id', async (req, res) => {
     const [updated] = await pool.query('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
     res.json({ message: 'Tugas berhasil diperbarui.', task: updated[0] });
   } catch (err) {
-    res.status(500).json({ message: 'Gagal memperbarui tugas.', error: err.message });
+    console.error('Update task error:', err.message);
+    res.status(500).json({ message: 'Gagal memperbarui tugas.' });
   }
 });
 
@@ -164,7 +168,8 @@ router.delete('/:id', async (req, res) => {
     }
     res.json({ message: 'Tugas berhasil dihapus.' });
   } catch (err) {
-    res.status(500).json({ message: 'Gagal menghapus tugas.', error: err.message });
+    console.error('Delete task error:', err.message);
+    res.status(500).json({ message: 'Gagal menghapus tugas.' });
   }
 });
 

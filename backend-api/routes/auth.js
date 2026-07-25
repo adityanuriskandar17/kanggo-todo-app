@@ -1,10 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const pool = require('../config/db');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 
 const router = express.Router();
+
+const authLimiter = process.env.NODE_ENV === 'test' ? null : rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Terlalu banyak percobaan login/register. Coba lagi dalam 15 menit.' },
+});
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -22,7 +31,9 @@ const errors = {
   emailExists: 'Email sudah terdaftar.',
 };
 
-router.post('/register', async (req, res) => {
+const authLimiterMw = authLimiter || ((req, res, next) => next());
+
+router.post('/register', authLimiterMw, async (req, res) => {
   try {
     const { nama, email, password } = req.body;
 
@@ -54,11 +65,12 @@ router.post('/register', async (req, res) => {
       token,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Terjadi kesalahan server.', error: err.message });
+    console.error('Register error:', err.message);
+    res.status(500).json({ message: 'Terjadi kesalahan server.' });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiterMw, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -84,7 +96,8 @@ router.post('/login', async (req, res) => {
       token,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Terjadi kesalahan server.', error: err.message });
+    console.error('Login error:', err.message);
+    res.status(500).json({ message: 'Terjadi kesalahan server.' });
   }
 });
 
