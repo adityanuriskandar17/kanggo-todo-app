@@ -33,16 +33,16 @@ npm install bcryptjs jsonwebtoken
 npm install dotenv express-rate-limit
 
 # Testing
-npm install --save-dev jest supertest
+npm install --save-dev jest supertest nodemon
 ```
 
 Edit `package.json` → ganti `"scripts"` jadi:
 
 ```json
 "scripts": {
-  "start": "node server.js",
-  "dev": "node --watch server.js",
-  "test": "node --experimental-vm-modules node_modules/.bin/jest --detectOpenHandles"
+  "start": "node index.js",
+  "dev": "nodemon index.js",
+  "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
 }
 ```
 
@@ -53,7 +53,7 @@ Edit `package.json` → ganti `"scripts"` jadi:
 ```bash
 mkdir config models middleware routes __tests__
 touch .env .env.example Dockerfile .dockerignore
-touch server.js
+touch index.js
 touch config/db.js
 touch models/User.js models/Task.js models/index.js
 touch middleware/auth.js
@@ -391,7 +391,7 @@ module.exports = router;
 
 ---
 
-## 📄 11. server.js
+## 📄 11. index.js
 
 Entry point. Load semua middleware, routes, sync database.
 
@@ -469,7 +469,7 @@ module.exports = { app, init };
 
 ```js
 const request = require('supertest');
-const { app, init } = require('../server');
+const { app, init } = require('../index');
 const { User } = require('../models');
 
 beforeAll(async () => { await init(); });
@@ -532,7 +532,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev
 COPY . .
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
 ```
 
 ### .dockerignore
