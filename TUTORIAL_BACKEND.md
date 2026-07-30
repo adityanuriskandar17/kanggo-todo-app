@@ -6,71 +6,85 @@ Tutorial ini akan memandu kamu membangun **backend** Kanggo Todo App secara leng
 - REST API dengan Express.js di port 3000
 - Autentikasi JWT (register, login, logout, me)
 - CRUD tugas dengan kepemilikan user, filter, pencarian, pagination
-- Validasi input (client + server), rate limiting, security headers (Helmet)
+- Validasi input, rate limiting, security headers (Helmet)
 - Database MySQL menggunakan Sequelize ORM
 
 ---
 
 ## Daftar Isi
 
-1. [Apa itu Sequelize & ORM?](#1-apa-itu-sequelize--orm)
-2. [Inisialisasi Project & package.json](#2-inisialisasi-project--packagejson)
-3. [Konfigurasi Environment (.env.example)](#3-konfigurasi-environment-envexample)
-4. [Koneksi Database (config/db.js)](#4-koneksi-database-configdbjs)
-5. [Model User (models/User.js)](#5-model-user-modelsuserjs)
-6. [Model Task (models/Task.js)](#6-model-task-modelstaskjs)
-7. [Setup Asosiasi (models/index.js)](#7-setup-asosiasi-modelsindexjs)
-8. [Middleware JWT (middleware/auth.js)](#8-middleware-jwt-middlewareauthjs)
-9. [Routes Autentikasi (routes/auth.js)](#9-routes-autentikasi-routesauthjs)
-10. [Routes Tugas (routes/tasks.js)](#10-routes-tugas-routestasksjs)
-11. [Entry Point Server (server.js)](#11-entry-point-server-serverjs)
-12. [Testing dengan Jest (__tests__/auth.test.js)](#12-testing-dengan-jest-__tests__authtestjs)
-13. [Dockerfile Backend](#13-dockerfile-backend)
-14. [.dockerignore](#14-dockerignore)
-15. [Menjalankan Aplikasi](#15-menjalankan-aplikasi)
+1. [Inisialisasi Project — npm init & install packages](#1-inisialisasi-project)
+2. [Struktur Folder & Boilerplate](#2-struktur-folder)
+3. [Konfigurasi Environment (.env & .env.example)](#3-konfigurasi-environment)
+4. [Koneksi Database (config/db.js)](#4-koneksi-database)
+5. [Model User (models/User.js)](#5-model-user)
+6. [Model Task (models/Task.js)](#6-model-task)
+7. [Setup Asosiasi (models/index.js)](#7-setup-asosiasi)
+8. [Middleware JWT (middleware/auth.js)](#8-middleware-jwt)
+9. [Routes Autentikasi (routes/auth.js)](#9-routes-autentikasi)
+10. [Routes Tugas (routes/tasks.js)](#10-routes-tugas)
+11. [Entry Point Server (server.js)](#11-entry-point-server)
+12. [Testing dengan Jest (__tests__/auth.test.js)](#12-testing)
+13. [Dockerfile & .dockerignore](#13-docker)
+14. [Menjalankan Aplikasi](#14-menjalankan-aplikasi)
 
 ---
 
-## 1. Apa itu Sequelize & ORM?
+## 1. Inisialisasi Project
 
-**Sequelize** adalah ORM (Object-Relational Mapping) untuk Node.js yang mendukung database SQL seperti PostgreSQL, MySQL, MariaDB, SQLite, dan MSSQL.
-
-### Kenapa ORM?
-
-Tanpa ORM, kita menulis SQL manual:
-```js
-await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-```
-
-Dengan ORM, kita menulis JavaScript:
-```js
-await User.findOne({ where: { email } });
-```
-
-### Keuntungan Sequelize
-
-| Aspek | Tanpa ORM (Raw SQL) | Dengan Sequelize |
-|-------|---------------------|------------------|
-| **Query** | String SQL manual | Method JavaScript (`findAll`, `create`) |
-| **Model** | Tidak ada definisi | Model dengan tipe data & validasi |
-| **Relasi** | Foreign key manual | `hasMany` / `belongsTo` otomatis |
-| **Migrasi** | Buat tabel via SQL | `sync()` otomatis |
-| **Keamanan** | Prepared statements manual | Anti SQL injection otomatis |
-| **Timestamps** | Kolom manual | `timestamps: true` — otomatis |
-
----
-
-## 2. Inisialisasi Project & package.json
-
-Buat folder `backend-api` dan inisialisasi project:
+### 1.1 Buat Folder Project
 
 ```bash
+mkdir kanggo-todo-app
+cd kanggo-todo-app
 mkdir backend-api
 cd backend-api
+```
+
+### 1.2 Inisialisasi npm
+
+```bash
 npm init -y
 ```
 
-### package.json
+Perintah ini akan membuat file `package.json` otomatis.
+
+### 1.3 Install Package Satu per Satu
+
+**Package Utama (dependencies):**
+
+```bash
+# Framework web
+npm install express
+
+# Middleware
+npm install cors
+npm install helmet
+npm install morgan
+
+# Database
+npm install sequelize
+npm install mysql2
+
+# Autentikasi
+npm install bcryptjs
+npm install jsonwebtoken
+
+# Utility
+npm install dotenv
+npm install express-rate-limit
+```
+
+**Package Testing (devDependencies):**
+
+```bash
+npm install --save-dev jest
+npm install --save-dev supertest
+```
+
+### 1.4 Cek package.json
+
+Setelah semua terinstall, buka `package.json` dan atur scripts:
 
 ```json
 {
@@ -87,18 +101,36 @@ npm init -y
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "express-rate-limit": "^8.6.0",
-    "helmet": "^8.3.0",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.11.0",
-    "mysql2": "^3.12.0",
-    "sequelize": "^6.37.5"
+    "morgan": "^1.10.0",
+    "mysql2": "^3.9.0",
+    "sequelize": "^6.37.0"
   },
   "devDependencies": {
-    "jest": "^30.4.2",
-    "supertest": "^7.2.2"
+    "jest": "^29.7.0",
+    "supertest": "^6.3.0"
   }
 }
+```
+
+**Penjelasan tiap package:**
+
+| Package | Fungsi |
+|---------|--------|
+| `express` | Framework web — membuat API server |
+| `cors` | Mengizinkan request dari domain lain |
+| `helmet` | Menambah security headers (X-Frame-Options, dll) |
+| `morgan` | Mencatat setiap request HTTP ke console |
+| `sequelize` | ORM — menghubungkan JavaScript ke MySQL |
+| `mysql2` | Driver MySQL — diperlukan Sequelize untuk komunikasi |
+| `bcryptjs` | Meng-hash password sebelum disimpan ke database |
+| `jsonwebtoken` | Membuat & memverifikasi token JWT |
+| `dotenv` | Membaca konfigurasi dari file `.env` |
+| `express-rate-limit` | Membatasi jumlah request (mencegah brute force) |
+| `jest` | Framework untuk testing |
+| `supertest` | Testing HTTP request tanpa perlu server benar-benar jalan |
 ```
 
 **Penjelasan Dependencies:**
@@ -127,34 +159,77 @@ npm install
 npm install --save-dev jest supertest
 ```
 
-### Struktur Folder
+---
 
-Setelah selesai, struktur folder `backend-api` akan seperti ini:
+## 2. Struktur Folder
+
+Sebelum mulai ngoding, kita buat dulu struktur folder dan file yang diperlukan.
+
+### 2.1 Buat Folder
+
+```bash
+# Dari dalam folder backend-api
+mkdir config
+mkdir models
+mkdir middleware
+mkdir routes
+mkdir __tests__
+```
+
+### 2.2 Buat File Kosong
+
+```bash
+touch server.js
+touch .env
+touch Dockerfile
+touch .dockerignore
+touch config/db.js
+touch models/User.js
+touch models/Task.js
+touch models/index.js
+touch middleware/auth.js
+touch routes/auth.js
+touch routes/tasks.js
+touch __tests__/auth.test.js
+```
+
+### 2.3 Hasil Akhir
 
 ```
 backend-api/
-├── package.json
-├── server.js
-├── Dockerfile
-├── .dockerignore
+├── package.json          # Daftar dependencies & scripts
+├── server.js             # Entry point utama
+├── .env                  # Konfigurasi environment (jangan di-commit!)
+├── Dockerfile            # Build image Docker
+├── .dockerignore         # File yang diabaikan Docker
 ├── config/
-│   └── db.js
+│   └── db.js             # Koneksi database Sequelize
 ├── models/
-│   ├── index.js
-│   ├── User.js
-│   └── Task.js
+│   ├── index.js          # Setup asosiasi antar model
+│   ├── User.js           # Model User
+│   └── Task.js           # Model Task
 ├── middleware/
-│   └── auth.js
+│   └── auth.js           # Middleware verifikasi JWT
 ├── routes/
-│   ├── auth.js
-│   └── tasks.js
+│   ├── auth.js           # Endpoint register, login, logout, me
+│   └── tasks.js          # Endpoint CRUD tugas
 └── __tests__/
-    └── auth.test.js
+    └── auth.test.js      # Unit test autentikasi
 ```
+
+Setelah struktur folder siap, kita mulai ngoding satu per satu. Urutan terbaik:
+
+1. **Konfigurasi** — `.env`, `config/db.js` (koneksi database)
+2. **Model** — `User.js`, `Task.js`, `index.js` (struktur tabel)
+3. **Middleware** — `auth.js` (JWT)
+4. **Routes** — `auth.js`, `tasks.js` (logika API)
+5. **Entry point** — `server.js` (gabungin semua)
+6. **Testing** — `auth.test.js`
+7. **Docker** — `Dockerfile`, `.dockerignore`
 
 ---
 
-## 3. Konfigurasi Environment (.env.example)
+## 3. Konfigurasi Environment (.env & .env.example)
 
 File `.env` menyimpan konfigurasi rahasia (password, secret key) yang TIDAK boleh masuk ke Git.
 
@@ -1747,7 +1822,7 @@ Tests: 7 passed, 7 total
 
 ---
 
-## 13. Dockerfile Backend
+## 13. Dockerfile & .dockerignore
 
 Dockerfile digunakan untuk membangun image Docker dari aplikasi backend.
 
@@ -1780,11 +1855,11 @@ CMD ["node", "server.js"]
 
 Docker membangun image dalam layer. Dengan memisahkan `COPY package.json` dan `RUN npm ci`, Docker bisa me-cache layer instalasi dependencies. Jika hanya kode aplikasi yang berubah (bukan package.json), Docker menggunakan cache untuk instalasi dependencies — lebih cepat.
 
----
-
-## 14. .dockerignore
+### .dockerignore
 
 File ini memberitahu Docker file/folder apa yang TIDAK boleh masuk ke image.
+
+Buat file `.dockerignore`:
 
 ```
 node_modules
@@ -1804,7 +1879,7 @@ __tests__
 
 ---
 
-## 15. Menjalankan Aplikasi
+## 14. Menjalankan Aplikasi
 
 ### Prasyarat
 
